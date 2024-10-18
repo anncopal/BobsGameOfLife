@@ -19,7 +19,7 @@ fps = 30
 for i in range(10*fps):
     clock.tick(fps)
     for event in pygame.event.get():
-        if event.type == pygame.FINGERDOWN:
+        if event.type in [pygame.FINGERDOWN, pygame.MOUSEBUTTONDOWN]:
             if event.x * winWidth < bob.rect.x:
                 if bob.speedx > 0:
                     bob.speedx *= -1

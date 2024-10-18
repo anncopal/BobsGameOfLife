@@ -36,17 +36,18 @@ class Game:
 
         self.totalbobs = 1
         self.totalfood = 40
+
         self.bob_startx = 450
         self.bob_starty = 450
         self.bob_radius = 20
-
         self.bobs = pygame.sprite.Group()
-        self.foodsupply = pygame.sprite.Group()
-        self.frame_vert = pygame.sprite.Group()
-        self.frame_hor = pygame.sprite.Group()
 
+        self.foodsupply = pygame.sprite.Group()
         self.new_food_required = False
         self.food_radius = 12
+
+        self.frame_vert = pygame.sprite.Group()
+        self.frame_hor = pygame.sprite.Group()
 
         for i in range(self.totalfood):
             x, y, r, color = self.random_parameters()
@@ -58,10 +59,10 @@ class Game:
             self.create_bob(self.bob_startx, self.bob_starty, self.bob_radius, self.red, 0, 0, name)
 
         # create frame
-        self.create_framepart(0, 0, 10, self.winHeight-10, self.frame_vert)
-        self.create_framepart(self.winWidth-10, 0, 10, self.winHeight-10, self.frame_vert)
-        self.create_framepart(0, 0, self.winWidth, 10, self.frame_hor)
-        self.create_framepart(0, self.winHeight-10, self.winWidth, 10, self.frame_hor)
+        self.create_framepart(-100, -100, 110, self.winHeight+200, self.frame_vert)
+        self.create_framepart(self.winWidth-10, -100, 110, self.winHeight+200, self.frame_vert)
+        self.create_framepart(-100, -100, self.winWidth+200, 110, self.frame_hor)
+        self.create_framepart(-100, self.winHeight-10, self.winWidth+200, 110, self.frame_hor)
         # print("Frame: ", self.frame_hor.sprites()[1].rect.x, self.frame_hor.sprites()[1].rect.y, self.frame_vert.sprites()[1].rect.x, self.frame_vert.sprites()[1].rect.y)
 
         # generate random sprite parameters
