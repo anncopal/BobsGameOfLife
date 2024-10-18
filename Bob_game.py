@@ -21,42 +21,48 @@ class Game:
     colors = [red, black, blue]
 
     # Fonts
-    scorefont = pygame.font.SysFont("comicsans", 70, True)
-    messagefont = pygame.font.SysFont("comicsans", 50, True)
+    scorefont = pygame.font.SysFont("comicsans", 30, True)
+    messagefont = pygame.font.SysFont("comicsans", 30, True)
 
     def __init__(self, window, winWidth, winHeight):
         self.window = window
         self.winWidth = winWidth
         self.winHeight = winHeight
+        print("Window: ", self.window, self.winWidth, self.winHeight)
+
         self.counter = 0
         self.bestscore = 0
         self.bestrun = 0
 
         self.totalbobs = 1
         self.totalfood = 40
-        self.bob_startx = 150
-        self.bob_starty = 250
+        self.bob_startx = 450
+        self.bob_starty = 450
+        self.bob_radius = 20
 
         self.bobs = pygame.sprite.Group()
         self.foodsupply = pygame.sprite.Group()
         self.frame_vert = pygame.sprite.Group()
         self.frame_hor = pygame.sprite.Group()
+
         self.new_food_required = False
+        self.food_radius = 12
 
         for i in range(self.totalfood):
             x, y, r, color = self.random_parameters()
-            r = 20
+            r = self.food_radius
             self.create_food(x, y, r, self.black)
 
         for i in range(self.totalbobs):
             name = "Bob_" + str(i)
-            self.create_bob(self.bob_startx, self.bob_starty, 50, self.red, 0, 0, name)
+            self.create_bob(self.bob_startx, self.bob_starty, self.bob_radius, self.red, 0, 0, name)
 
         # create frame
-        self.create_framepart(0, 0, 5, self.winHeight, self.frame_vert)
-        self.create_framepart(self.winWidth, 0, 5, self.winHeight, self.frame_vert)
-        self.create_framepart(0, 0, self.winWidth, 5, self.frame_hor)
-        self.create_framepart(0, self.winHeight, self.winWidth, 5, self.frame_hor)
+        self.create_framepart(0, 0, 10, self.winHeight-10, self.frame_vert)
+        self.create_framepart(self.winWidth-10, 0, 10, self.winHeight-10, self.frame_vert)
+        self.create_framepart(0, 0, self.winWidth, 10, self.frame_hor)
+        self.create_framepart(0, self.winHeight-10, self.winWidth, 10, self.frame_hor)
+        # print("Frame: ", self.frame_hor.sprites()[1].rect.x, self.frame_hor.sprites()[1].rect.y, self.frame_vert.sprites()[1].rect.x, self.frame_vert.sprites()[1].rect.y)
 
         # generate random sprite parameters
     def random_parameters(self):
@@ -122,6 +128,29 @@ class Game:
             self.new_food_required = True
             bob.energy += 1
 
+    # pause game
+    def paused(self):
+        pause_text = self.messagefont.render("Game paused... Click here to resume.", 1, (0, 255, 255))
+        resume_button = pause_text.get_rect(topleft=((self.winWidth/3), (self.winHeight/2)))
+        clock = pygame.time.Clock()
+        pause = True
+
+        while pause:
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.FINGERDOWN:
+                    if resume_button.collidepoint(event.pos):
+                        print("START Button was pressed")
+                        pause = False
+
+            self.window.blit(pause_text, resume_button)
+            pygame.draw.rect(self.window, (0, 255, 255), resume_button, 1)
+            pygame.display.update()
+            clock.tick(15)
+
     # single game loop
     def loop(self, bob):
         bob.move()
@@ -133,7 +162,7 @@ class Game:
             required = self.totalfood-len(self.foodsupply.sprites())
             for i in range(required):
                 x, y, r, color = self.random_parameters()
-                r = 20
+                r = self.food_radius
                 self.create_food(x, y, r, color)
             self.new_food_required = False
 
