@@ -19,7 +19,7 @@ initspeedx = 25
 initspeedy = 15
 bob.speedx = initspeedx
 bob.speedy = initspeedy
-game.food_radius = 20
+game.food_radius = 12
 game.bob_radius = 30
 
 
@@ -54,8 +54,9 @@ class MyAI:
         net = neat.nn.FeedForwardNetwork.create(genome, config)
 
         while run:
-            fps = 30
+            fps = 60
             clock = pygame.time.Clock()
+            game.counter += 1
             for i in range(10*fps):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -66,12 +67,10 @@ class MyAI:
                 game.loop(bob)
                 food = game.find_food(bob)
                 closestfood = food[0]
-                # print("closest: ", closestfood)
+                # print("closest: ", closestfood[0])
                 self.move_ai(net, closestfood)
 
             genome.fitness = bob.energy
-            game.counter += 1
-
             break
 
         return False
@@ -92,7 +91,6 @@ class MyAI:
                 game.loop(bob)
                 food = game.find_food(bob)
                 closestfood = food[0]
-                # print("closest: ", closestfood)
                 self.move_ai(net, closestfood)
 
 
@@ -101,7 +99,7 @@ class MyAI:
 def eval_genomes(genomes, config):
 
     for i, (genome_id, genome) in enumerate(genomes):
-        print("progress...", round(i/len(genomes) * 100), end=" ")
+        print("progress...", round(i/len(genomes) * 100), "%")
         genome.fitness = 0
         bob.energy = 0
         bob.rect.x = game.bob_startx
