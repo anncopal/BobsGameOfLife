@@ -9,16 +9,18 @@ myDisplay = pygame.display.Info()
 winWidth = myDisplay.current_w-4
 winHeight = myDisplay.current_h-210
 win = pygame.display.set_mode((winWidth, winHeight))
-
+# print("Screen: ", myDisplay, winWidth, winHeight)
 game = Bob_game.Game(win, winWidth, winHeight)
 
 # set initial speed for bob
 bob = game.bobs.sprites()[0]
 food = []
-initspeedx = 35
-initspeedy = 25
+initspeedx = 25
+initspeedy = 15
 bob.speedx = initspeedx
 bob.speedy = initspeedy
+game.food_radius = 20
+game.bob_radius = 30
 
 
 # ------------------------------------
@@ -52,13 +54,14 @@ class MyAI:
         net = neat.nn.FeedForwardNetwork.create(genome, config)
 
         while run:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return True
-
             fps = 30
             clock = pygame.time.Clock()
             for i in range(10*fps):
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        return True
+                    if event.type in [pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN, pygame.FINGERDOWN]:
+                        game.paused()
                 clock.tick(fps)
                 game.loop(bob)
                 food = game.find_food(bob)
@@ -77,13 +80,14 @@ class MyAI:
         run = True
 
         while run:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return True
-
             fps = 30
             clock = pygame.time.Clock()
             for i in range(20*fps):
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        return True
+                    if event.type == pygame.KEYDOWN:
+                        game.paused()
                 clock.tick(fps)
                 game.loop(bob)
                 food = game.find_food(bob)
